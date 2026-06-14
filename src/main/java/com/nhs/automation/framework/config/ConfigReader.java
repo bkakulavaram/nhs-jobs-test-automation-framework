@@ -43,7 +43,4 @@ public class ConfigReader {
         return properties.getProperty("tooManyLocations");
     }
 
-
-
-
 }

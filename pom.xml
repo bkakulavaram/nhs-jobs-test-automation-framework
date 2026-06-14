@@ -23,14 +23,12 @@
 
     <dependencies>
 
-        <!-- ================= SELENIUM ================= -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
             <version>${selenium.version}</version>
         </dependency>
 
-        <!-- ================= CUCUMBER ================= -->
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
@@ -43,7 +41,6 @@
             <version>${cucumber.version}</version>
         </dependency>
 
-        <!-- ================= TESTNG ================= -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
@@ -51,14 +48,12 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- ================= WEB DRIVER MANAGER (optional fallback) ================= -->
         <dependency>
             <groupId>io.github.bonigarcia</groupId>
             <artifactId>webdrivermanager</artifactId>
             <version>${webdrivermanager.version}</version>
         </dependency>
 
-        <!-- ================= LOGGING ================= -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -71,7 +66,6 @@
             <version>${logback.version}</version>
         </dependency>
 
-        <!-- ================= ALLURE REPORTING ================= -->
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-testng</artifactId>
@@ -83,7 +77,6 @@
     <build>
         <plugins>
 
-            <!-- ================= COMPILER ================= -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -94,18 +87,10 @@
                 </configuration>
             </plugin>
 
-            <!-- ================= SUREFIRE (TEST RUNNER) ================= -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
-                <configuration>
-                    <suiteXmlFiles>
-                        <suiteXmlFile>testng.xml</suiteXmlFile>
-                    </suiteXmlFiles>
-
-
-                </configuration>
             </plugin>
 
         </plugins>

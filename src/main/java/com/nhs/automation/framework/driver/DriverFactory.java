@@ -1,6 +1,5 @@
 package com.nhs.automation.framework.driver;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -21,17 +20,14 @@ public class DriverFactory {
         switch(browser.trim().toLowerCase()) {
 
             case "firefox":
-                WebDriverManager.firefoxdriver().setup();
                 webDriver = new FirefoxDriver();
                 break;
 
             case "chrome":
-                WebDriverManager.chromedriver().setup();
                 webDriver = new ChromeDriver();
                 break;
 
             case "edge":
-                WebDriverManager.edgedriver().setup();
                 webDriver = new EdgeDriver();
                 break;
 

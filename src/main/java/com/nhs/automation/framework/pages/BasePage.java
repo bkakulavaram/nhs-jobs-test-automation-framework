@@ -16,14 +16,20 @@ public class BasePage {
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
+    public WebElement find(By locator) {
+        return wait.until(
+                ExpectedConditions.visibilityOfElementLocated(locator)
+        );
+    }
+
+    public List<WebElement> findAll(By locator){
+        return driver.findElements(locator);
+    }
+
     public void click(By locator) {
-        try {
+
             wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
-        } catch (StaleElementReferenceException e) {
-            wait.until(ExpectedConditions.refreshed(
-                    ExpectedConditions.elementToBeClickable(locator)
-            )).click();
-        }
+
     }
 
     public void type(By locator, String value) {
@@ -32,18 +38,6 @@ public class BasePage {
         );
         el.clear();
         el.sendKeys(value);
-    }
-
-    public String getText(By locator) {
-        return wait.until(
-                ExpectedConditions.visibilityOfElementLocated(locator)
-        ).getText();
-    }
-
-    public WebElement find(By locator) {
-        return wait.until(
-                ExpectedConditions.visibilityOfElementLocated(locator)
-        );
     }
 
     public boolean isDisplayed(By locator) {
@@ -55,13 +49,42 @@ public class BasePage {
             return false;
         }
     }
-
+    public boolean isElementVisible(By locator) {
+        try {
+            return driver.findElement(locator).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
     public void waitForPageLoad() {
         wait.until(driver ->
                 ((JavascriptExecutor) driver)
                         .executeScript("return document.readyState")
                         .equals("complete")
         );
+    }
+    protected void waitForUrlContains(String value) {
+
+        wait.until(
+                ExpectedConditions.urlContains(value));
+    }
+    public void waitForResultsToLoad(By locator) {
+
+        wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
+
+        wait.until(driver -> {
+
+            List<WebElement> elements =
+                    driver.findElements(locator);
+
+            return !elements.isEmpty();
+        });
+    }
+
+    public String getText(By locator) {
+        return wait.until(
+                ExpectedConditions.visibilityOfElementLocated(locator)
+        ).getText();
     }
 
     public void scrollToElement(By locator) {
@@ -70,7 +93,4 @@ public class BasePage {
                 .executeScript("arguments[0].scrollIntoView(true);", el);
     }
 
-    public List<WebElement> findAll(By locator){
-        return driver.findElements(locator);
-    }
 }

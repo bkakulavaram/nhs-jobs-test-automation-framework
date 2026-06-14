@@ -16,9 +16,9 @@ Feature: NHS Job Search Functionality
     Examples:
       | job            | location  | distance |
       | engineer       | Manchester| +5 Miles  |
-      | nurse          | Reading   | +5 Miles  |
-      | doctor         | London    | +10 Miles |
-      | pharmacist     | Leeds     | +20 Miles |
+      | nurse          | Reading   | +10 Miles  |
+      | doctor         | London    | +30 Miles |
+      | pharmacist     | Leeds     | +50 Miles |
 
 
 
@@ -27,8 +27,8 @@ Feature: NHS Job Search Functionality
     When I search using advanced criteria
       | job       | nurse |
       | location  | Reading |
-      | distance  | +5 Miles |
-      | employer  | Berkshire Healthcare NHS Foundation Trust |
+      | distance  | +10 Miles |
+      | employer  | Berkshire Healthcare Foundation Trust |
       | payRange  | £20,000 to £30,000 |
 
     Then advanced search results should match my criteria

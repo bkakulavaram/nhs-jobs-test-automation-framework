@@ -2,6 +2,7 @@ package com.nhs.automation.framework.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 
 
@@ -31,21 +32,6 @@ public class SearchPage extends BasePage {
         type(whereField,value);
     }
 
-    public void selectDistance(String value) {
-        new Select(driver.findElement(distanceDropdown)).selectByVisibleText(value);
-    }
-
-    public void clickSearch() {
-        click(searchButton);
-    }
-
-    public void clearFilters() {
-        click(clearButton);
-    }
-
-    public void clickSearchOptionsLink(){
-        click(searchOptionsLink);
-    }
 
     public void enterJobReference(String value){
         type(jobReference,value);
@@ -55,8 +41,66 @@ public class SearchPage extends BasePage {
         type(employer,value);
     }
 
+    public void selectDistance(String value) {
+
+        new Select(find(distanceDropdown))
+                .selectByVisibleText(value);
+    }
     public void selectPayRange(String value) {
-        new Select(driver.findElement(payRangeDropdown)).selectByVisibleText(value);
+
+        new Select(find(payRangeDropdown))
+                .selectByVisibleText(value);
+    }
+
+    public void clickSearch() {
+
+        click(searchButton);
+
+        waitForPageLoad();
+
+        wait.until(driver -> {
+
+            String url = driver.getCurrentUrl();
+
+            return url.contains("/results")
+                    || url.contains("location-not-found")
+                    || url.contains("too-many-locations");
+        });
+    }
+    public void clickSearchOptionsLink(){
+
+        click(searchOptionsLink);
+
+
+    }
+
+    public void clearFilters() {
+
+        click(clearButton);
+
+        waitForPageLoad();
+    }
+
+    public void waitForAdvancedFilters() {
+        wait.until(ExpectedConditions.or(
+                ExpectedConditions.visibilityOfElementLocated(By.id("jobReference")),
+                ExpectedConditions.visibilityOfElementLocated(By.id("employer")),
+                ExpectedConditions.visibilityOfElementLocated(By.id("payRange"))
+        ));
+    }
+
+    public boolean advancedFiltersDisplayed() {
+
+        waitForAdvancedFilters();
+        return (isDisplayed(jobReference)
+                && isDisplayed(employer)
+                && isDisplayed(payRangeDropdown));
+    }
+
+    public boolean advancedFiltersHidden() {
+        return !isElementVisible(jobReference)
+                || !isElementVisible(employer)
+                || !isElementVisible(payRangeDropdown);
     }
 
     public ResultsPage searchWithBasicCriteria(String what, String where, String distance) {
@@ -66,13 +110,16 @@ public class SearchPage extends BasePage {
             selectDistance(distance);
 
         }
-        click(searchButton);
+        clickSearch();
+
         return new ResultsPage(driver);
     }
 
-    public ResultsPage searchWithAdvancedCriteria(String what, String where, String distance,String jobReference,String employer,String payRange) {
+
+    public ResultsPage searchWithAdvancedCriteria(String what, String where, String distance, String jobReference, String employer, String payRange) {
 
         clickSearchOptionsLink();
+        waitForAdvancedFilters();
             enterWhat(what);
             enterWhere(where);
 
@@ -102,57 +149,36 @@ public class SearchPage extends BasePage {
         }
 
 
-    public boolean advancedFiltersDisplayed() {
+        public void clickSearchWithoutEnteringAnyData() {
 
-
-        return (isDisplayed(jobReference) && isDisplayed(employer) && isDisplayed(payRangeDropdown));
-    }
-
-    public boolean advancedFiltersHidden() {
-        System.out.println(isDisplayed(jobReference) && isDisplayed(employer) && isDisplayed(payRangeDropdown));
-        return (!(isDisplayed(jobReference) && isDisplayed(employer) && isDisplayed(payRangeDropdown)));
-    }
-
-
-    public void clickSearchWithoutEnteringAnyData() {
-        System.out.println(driver.getCurrentUrl());
         click(searchButton);
-        System.out.println(driver.getCurrentUrl());
+
     }
 
     public void searchForAJobUsingInvalidLocation(String location) {
-        System.out.println(driver.getCurrentUrl());
 
         type(whereField,location);
 
         click(searchButton);
 
-        System.out.println(driver.getCurrentUrl());
     }
 
-    public String getSelectedJobReference() {
-        return driver.findElement(jobReference)
-                .getAttribute("value");
-    }
-
-    public String getSelectedEmployer() {
-        return driver.findElement(employer)
-                .getAttribute("value");
-    }
-
-    public String getSelectedPayRange() {
-        return new Select(driver.findElement(payRangeDropdown))
-                .getFirstSelectedOption()
-                .getText();
-    }
     public boolean isSearchPageReset() {
 
-        boolean keywordEmpty = driver.findElement(whatField).getAttribute("value").isEmpty();
-        boolean locationEmpty = driver.findElement(whereField).getAttribute("value").isEmpty();
+        boolean keywordEmpty =
+                find(whatField)
+                        .getAttribute("value")
+                        .isEmpty();
 
-        String distance = new Select(driver.findElement(distanceDropdown))
-                .getFirstSelectedOption()
-                .getText();
+        boolean locationEmpty =
+                find(whereField)
+                        .getAttribute("value")
+                        .isEmpty();
+
+        String distance =
+                new Select(find(distanceDropdown))
+                        .getFirstSelectedOption()
+                        .getText();
 
 
         boolean distanceReset =

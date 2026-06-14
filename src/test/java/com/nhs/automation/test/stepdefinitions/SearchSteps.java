@@ -34,10 +34,10 @@ public class SearchSteps {
 
         driver = DriverFactory.getDriver();
 
-        searchPage = new SearchPage(driver);
-        resultsPage = new ResultsPage(driver);
-
         driver.get(ConfigReader.getBaseUrl());
+
+        searchPage = new SearchPage(driver);
+
     }
 
 
@@ -64,7 +64,6 @@ public class SearchSteps {
                 "No search results matched the criteria"
         );
     }
-
 
 
     @Then("results should be sorted by newest date posted first")
@@ -108,23 +107,20 @@ public class SearchSteps {
                 .setEmployer(lastEmployer)
                 .setPayRange(lastPayRange)
                 .setJobReference(null);
-        System.out.println(rule);
         Assert.assertTrue(
                 resultsPage.validateResults(rule),
                 "Advanced search results do not match search criteria"
         );
     }
 
-
+    @Then("I should see more search filters")
+    public void iShouldSeeJobReferenceEmployerAndPayRangeFields() {
+        Assert.assertTrue(searchPage.advancedFiltersDisplayed());
+    }
 
     @When("I have opened more search options")
     public void iOpenMoreSearchOptions() {
         searchPage.clickSearchOptionsLink();
-    }
-
-    @Then("I should see more search filters")
-    public void iShouldSeeJobReferenceEmployerAndPayRangeFields() {
-        Assert.assertTrue(searchPage.advancedFiltersDisplayed());
     }
 
     @When("I click on fewer search options")
@@ -177,7 +173,12 @@ Assert.assertTrue(searchPage.isSearchPageReset());
 
     @Then("I should see all the jobs on NHS")
     public void iShouldSeeAllTheJobsOnNHS() {
-        Assert.assertTrue(resultsPage.areResultsDisplayed());
+        ResultsPage resultsPage = new ResultsPage(driver);
+        Assert.assertTrue(
+
+                resultsPage.areResultsDisplayed(),
+                "No results displayed"
+        );
     }
 
 
