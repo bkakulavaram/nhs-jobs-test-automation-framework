@@ -1,43 +1,65 @@
 # NHS Jobs Search Automation Framework
 
 ## Overview
+This project is a UI Test Automation Framework developed to validate the NHS Jobs Search functionality in alignment with the provided user story and acceptance criteria.
 
-This project is a UI Test Automation Framework developed to validate the NHS Jobs Search functionality in accordance with the provided user story and acceptance criteria.
+The framework validates that jobseekers can perform job searches using basic and advanced filters and receive relevant results. It also verifies filter behaviour, search result correctness, and user-triggered sorting functionality.
 
-The framework verifies that jobseekers can search for jobs using both basic and advanced search criteria and receive relevant, recently posted job results sorted by newest date posted.
+The solution is designed using modern automation principles with emphasis on scalability, maintainability, and cross-browser compatibility.
 
-The solution follows industry-standard automation engineering practices using:
+---
 
-* Java 21
-* Selenium WebDriver 4
-* Cucumber BDD
-* TestNG
-* Maven
-* Page Object Model (POM)
-* Factory Design Pattern
+## Tech Stack
+
+- Java 21  
+- Selenium WebDriver 4+  
+- Cucumber (BDD)  
+- TestNG  
+- Maven  
+- Page Object Model (POM)  
+- Factory Design Pattern  
+- Selenium Manager (native driver resolution)
+
+---
+
+## Testing Approach
+
+A **user-centric, risk-based testing strategy** was followed.
+
+Focus areas:
+- End-to-end validation of job search journey from user perspective  
+- Functional correctness of filters and search results  
+- Validation of UI-driven behaviours (expand/collapse, filtering, sorting)  
+- Cross-browser consistency (Chrome & Firefox)  
+- Data-driven variability handling due to live NHS Jobs dataset  
+
+Testing prioritised:
+- Critical user flows (search → filter → results validation)  
+- High-risk areas (filters and result correctness)  
+- UI consistency and usability
 
 ---
 
 ## User Story
 
-**As a jobseeker on NHS Jobs website**
-
-**I want to search for a job with my preferences**
-
-**So that I can get recently posted job results**
+As a jobseeker on NHS Jobs website  
+I want to search for a job with my preferences  
+So that I can get relevant job results
 
 ---
 
 ## Acceptance Criteria
 
-* Given I am a jobseeker on NHS Jobs website
-* When I put my preferences into the Search functionality
-* Then I should get a list of jobs which matches my preferences
-* And sort my search results with the newest Date Posted
+- Search results are returned based on user preferences  
+- Results match applied filters (keyword, location, distance, employer, pay range where applicable)  
+- Advanced search filters behave correctly (expand/collapse/apply/remove)  
+- Empty search behaviour is handled correctly  
+- Invalid location scenarios are handled gracefully  
+- Results sorting is validated when explicitly selected by the user (e.g., “Newest First”)
 
 ---
 
-## BDD Example
+## BDD Sample
 
 ```gherkin
 Feature: NHS Job Search
@@ -46,376 +68,211 @@ Scenario: Search jobs using preferences
   Given I am a jobseeker on NHS Jobs website
   When I search using my preferences
   Then I should see jobs matching my preferences
-  And results should be sorted by newest date posted
 ```
 
 ---
 
-## Requirements Coverage Matrix
+## Requirements Coverage
 
-| Requirement                          | Automated |
-| ------------------------------------ | --------- |
-| Search using job keyword             | ✅         |
-| Search using location                | ✅         |
-| Search using distance filter         | ✅         |
-| Results returned successfully        | ✅         |
-| Results match search preferences     | ✅         |
-| Results sorted by newest date posted | ✅         |
-| Advanced search filters              | ✅         |
-| Employer filter validation           | ✅         |
-| Pay range filter validation          | ✅         |
-| Search options expand/collapse       | ✅         |
-| Empty search behaviour               | ✅         |
-| Invalid location handling            | ✅         |
-| Clear filters functionality          | ✅         |
+| Requirement | Automated |
+|------------|----------|
+| Keyword search | ✅ |
+| Location search | ✅ |
+| Distance filter | ✅ |
+| Advanced filters | ✅ |
+| Employer filter | ✅ |
+| Pay range filter | ✅ |
+| Expand/collapse filters | ✅ |
+| Clear filters | ✅ |
+| Empty search handling | ✅ |
+| Invalid location handling | ✅ |
+| User-triggered sorting (“Newest First”) | ✅ |
 
 ---
 
-## Business Scenarios Covered
+## Framework Architecture
 
-### Basic Search
-
-Validate users can search using:
-
-* What (job keyword)
-* Where (location)
-* Distance
-
-Validation includes:
-
-* Search results are returned
-* Results contain relevant jobs
-* Results fall within selected distance
-* Results are recently posted
-* Results are sorted by newest date first
-
----
-
-### Advanced Search
-
-Validate:
-
-* Employer
-* Pay range
-* Job reference framework support
-
-Validation includes:
-
-* Returned jobs satisfy selected filters
-* Advanced search filters appear correctly
-* Search options can be expanded and collapsed
-
----
-
-### Search Page Behaviour
-
-Validate:
-
-* More search options visibility
-* Fewer search options functionality
-* Clear filters functionality
-* Empty search behaviour
-* Invalid location handling
-
----
-
-## Framework Design
-
-### Design Patterns Used
+### Design Patterns
 
 #### Page Object Model (POM)
-
-Separates page interactions from test logic to improve maintainability and readability.
-
-Pages implemented:
-
-* BasePage
-* SearchPage
-* ResultsPage
-
----
+- Separates UI actions from test logic
+- Improves maintainability and reduces duplication
+- Centralised locator management per page
 
 #### Factory Pattern
+- Centralised driver creation via `DriverFactory`
+- Supports multi-browser execution strategy
 
-DriverFactory centralises browser creation and management.
-
-Supported browsers:
-
-* Chrome
-* Firefox
-
----
-
-#### Thread-Safe Driver Management
-
-ThreadLocal WebDriver implementation enables future support for parallel execution without framework redesign.
+#### ThreadLocal WebDriver
+- Enables future parallel execution
+- Ensures thread-safe test execution
 
 ---
 
-#### Reusable Validation Layer
+## Driver Strategy (Selenium Manager)
 
-Search results are validated through reusable validation methods rather than embedding validation logic directly into step definitions.
+This framework uses **Selenium Manager (Selenium 4.6+)** for automatic driver resolution.
 
-Validation includes:
+Key characteristics:
+- No WebDriverManager dependency  
+- No manual driver binaries required  
+- No local chromedriver/geckodriver setup  
+- Drivers are resolved dynamically at runtime  
+- Fully compatible with CI/CD pipelines  
 
-* Keyword relevance
-* Distance validation
-* Date validation
-* Employer validation
-* Pay range validation
-
----
-
-## Framework Design Decisions
-
-* Page Object Model was selected to minimise locator duplication and improve maintainability.
-* Browser creation is abstracted through DriverFactory to support cross-browser execution.
-* Validation logic is separated from page interactions to improve reusability.
-* ThreadLocal WebDriver implementation supports future parallel execution.
-* Explicit waits are used to improve test stability and reduce flaky failures.
+This approach ensures environment independence and aligns with modern Selenium standards.
 
 ---
 
 ## Project Structure
 
-```text
+```
 src
  ├── main
+ │    └── java
+ │         ├── config
+ │         ├── driver
+ │         ├── pages
+ │         ├── models
+ │         └── utils
+ │
  └── test
       ├── java
-      │
-      ├── config
-      ├── driver
-      ├── hooks
-      ├── models
-      ├── pages
-      ├── runners
-      ├── stepdefinitions
+      │    ├── hooks
+      │    ├── runners
+      │    ├── stepdefinitions
+      │    └── framework
       │
       └── resources
-           ├── features
-           └── config.properties
+           └── features
 ```
 
 ---
 
-## Technology Stack
+## Browser Compatibility
 
-| Tool                                           | Purpose                   |
-| ---------------------------------------------- | ------------------------- |
-| Java 21                                        | Programming Language      |
-| Selenium WebDriver                             | Browser Automation        |
-| Cucumber                                       | BDD Framework             |
-| TestNG                                         | Test Execution            |
-| Maven                                          | Build Management          |
-| Selenium Manager / Automatic Driver Resolution | Browser Driver Management |
+- Chrome  
+- Firefox  
 
----
-
-## Browser Support
-
-The framework supports execution on:
-
-* Chrome
-* Firefox
-
-Browser drivers are resolved automatically at runtime and are not committed to the repository.
-
-### Run Chrome
-
-```bash
-mvn clean test
-```
-
-### Run Firefox
-
-```bash
-mvn clean test -Dbrowser=firefox
-```
+All browser drivers are resolved automatically using Selenium Manager.  
+No external driver setup or machine-specific configuration is required.
 
 ---
 
 ## Execution
 
-Execute all tests:
-
+Run all tests:
 ```bash
 mvn clean test
 ```
 
-Execute specific browser:
-
+Run on Chrome:
 ```bash
 mvn clean test -Dbrowser=chrome
 ```
 
+Run on Firefox:
 ```bash
 mvn clean test -Dbrowser=firefox
 ```
 
 ---
 
-## Reporting
+## Locators Strategy
 
-Generated outputs include:
+A stability-first locator approach is used:
 
-* Console Logs
-* Cucumber HTML Report
-* Cucumber JSON Report
+- Preferred: `id`, `name`, `aria-label`  
+- Secondary: CSS selectors for structured elements  
+- Avoided: brittle absolute XPath  
+- Dynamic elements handled using explicit waits  
 
-Location:
-
-```text
-target/
-```
-
-Example:
-
-```text
-target/cucumber-report.html
-```
+This ensures resilience against UI changes and reduces flaky tests.
 
 ---
 
-## Key Validation Logic
+## Key Validation Strategy
 
-### Relevance Validation
+### Functional Validation
+- Keyword relevance
+- Location matching
+- Distance validation
+- Employer filter validation
+- Pay range validation
 
-Each result is validated against:
-
-* Search keyword
-* Search location
-* Search distance
-* Employer filter
-* Pay range filter
-* Job reference filter
-
-Results failing validation are logged for analysis and debugging.
+### Sorting Validation (User-Triggered)
+- Results are validated for correct order when “Newest First” is explicitly selected
 
 ---
 
-### Date Validation
-
-Search results are validated to ensure vacancies are recently posted.
-
-Default validation window:
-
-```text
-30 Days
-```
-
----
-
-### Distance Validation
-
-Returned vacancies are validated against the selected search radius.
-
-Examples:
-
-```text
-+5 Miles
-+10 Miles
-+20 Miles
-```
-
----
-
-## Non-Functional Considerations
+## Non-Functional Testing Strategy
 
 ### Accessibility
-
-The following accessibility areas would be covered:
-
-* Keyboard navigation
-* Screen reader compatibility
-* WCAG 2.2 AA compliance
-* Colour contrast validation
-* Form field labelling validation
-* Focus order verification
-
----
+- Keyboard navigation validation considerations  
+- Screen reader compatibility awareness  
+- WCAG 2.2 AA alignment  
+- Focus order and form labeling validation  
 
 ### Compatibility
+- Cross-browser testing (Chrome, Firefox)  
+- Responsive viewport validation  
+- UI consistency across browsers  
 
-Compatibility considerations include:
+### Performance Considerations
+- Search response time validation  
+- Large result set handling  
+- Concurrent user simulation  
+- UI rendering performance under load  
 
-* Chrome browser testing
-* Firefox browser testing
-* Responsive viewport testing
-* Different screen resolutions
-* Cross-browser behaviour verification
-
----
-
-### Performance Testing Considerations
-
-Performance testing would focus on:
-
-* Search response times
-* High-volume search requests
-* Concurrent user load
-* Result rendering performance
-* Backend search scalability
-* Peak usage behaviour
-
-Recommended tools:
-
-* JMeter
-* Gatling
-* Azure Load Testing
+### Data Migration Testing (High Level)
+- Record count reconciliation  
+- Field mapping validation  
+- Data integrity checks  
+- Duplicate detection  
+- End-to-end migration validation  
 
 ---
 
-### Data Migration Testing Considerations
+## Issues Identified During Execution
 
-For migration of vacancies and applications from a legacy NHS Trust system into NHS Jobs:
-
-* Record count reconciliation
-* Data completeness validation
-* Data integrity verification
-* Field mapping validation
-* Historical vacancy validation
-* Historical application validation
-* Duplicate record detection
-* User acceptance testing
-* End-to-end migration verification
+- No critical functional defects observed in search workflow  
+- Minor variability in salary formatting across job listings (data-driven inconsistency from source system)  
+- Result availability depends on live NHS Jobs dataset  
 
 ---
 
 ## Assumptions
 
-* NHS Jobs returns results in descending date order.
-* Search filters behave consistently across supported browsers.
-* Search result cards contain sufficient information for validation.
-* NHS Jobs search relevance algorithm is not publicly documented.
+- NHS Jobs UI reflects real-time data  
+- Filters behave consistently across supported browsers  
+- Sorting is only validated when explicitly triggered  
+- Relevance is derived from visible UI data only  
 
 ---
 
 ## Known Limitations
 
-* Search relevance is validated using visible result information only.
-* Salary formats may vary between vacancies.
-* Some search combinations may naturally return limited or no results depending on live NHS Jobs data.
+- No API-level validation included  
+- Relevance validation is UI-based only  
+- Salary and job data vary based on live postings  
+- Test stability depends on external NHS dataset availability  
 
 ---
 
-## Potential Future Enhancements
+## Improvements (Next Iteration)
 
-* Screenshot capture on failure
-* Parallel execution
-* CI/CD integration
-* Allure reporting
-* Docker execution
-* Selenium Grid support
-* Cross-browser execution matrix
-* Accessibility automation integration
-* API contract testing
-* Cloud execution using BrowserStack or Sauce Labs
+- Parallel execution via Selenium Grid  
+- CI/CD integration (GitHub Actions / Jenkins)  
+- Allure reporting integration  
+- Dockerized execution environment  
+- Cloud execution (BrowserStack / Sauce Labs)  
+- API + UI hybrid validation layer  
+- Accessibility automation tooling integration  
+- Performance testing integration (JMeter / Gatling)
 
 ---
 
 ## Author
+Bhargavi Kakulavaram
 
-**Bhargavi Kakulavaram**
-
- Automation Exercise – NHS Jobs Search Automation Framework
+Automation Exercise – NHS Jobs Search Automation Framework
